@@ -6,16 +6,19 @@
   <title>Maschera di Venezia – Audiolibro</title>
   <style>
     :root {
-      --bg: #0b0e14;
-      --panel: rgba(18, 24, 38, 0.88);
-      --panel-2: rgba(27, 34, 52, 0.9);
-      --gold: #d9b36c;
-      --gold-soft: #b79252;
-      --text: #f3efe7;
-      --muted: #c8c0b1;
-      --line: rgba(217, 179, 108, 0.22);
-      --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
-      --radius: 22px;
+      --bg: #07111f;
+      --bg-2: #0d1830;
+      --panel: rgba(235, 242, 255, 0.1);
+      --panel-strong: rgba(226, 236, 255, 0.16);
+      --panel-soft: rgba(214, 228, 255, 0.08);
+      --line: rgba(189, 210, 255, 0.22);
+      --line-strong: rgba(198, 218, 255, 0.34);
+      --text: #eef4ff;
+      --muted: #bfd0ee;
+      --accent: #b9cfff;
+      --accent-2: #9ebdff;
+      --shadow: 0 18px 50px rgba(2, 8, 20, 0.42);
+      --radius: 24px;
     }
 
     * { box-sizing: border-box; }
@@ -23,129 +26,146 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background:
-        linear-gradient(rgba(7, 10, 18, 0.76), rgba(7, 10, 18, 0.92)),
-        radial-gradient(circle at top, rgba(217, 179, 108, 0.14), transparent 35%),
-        #0a0d14;
+        radial-gradient(circle at top left, rgba(163, 191, 255, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(147, 180, 255, 0.14), transparent 24%),
+        linear-gradient(180deg, #0a1325 0%, #0b1730 48%, #09101f 100%);
     }
 
     .shell {
-      width: min(1100px, calc(100% - 32px));
-      margin: 28px auto;
-      padding: 24px;
+      width: min(1180px, calc(100% - 32px));
+      margin: 24px auto;
+      padding: 26px;
       border: 1px solid var(--line);
-      border-radius: 28px;
-      background: rgba(8, 12, 20, 0.72);
+      border-radius: 32px;
+      background: rgba(10, 18, 34, 0.72);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(18px);
     }
 
     .header {
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
     .eyebrow {
-      color: var(--gold);
-      font-size: 0.92rem;
-      letter-spacing: 0.18em;
+      color: var(--accent);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: #f8f3ea;
-      font-weight: 600;
+      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      color: #f6f9ff;
+      font-weight: 700;
+      letter-spacing: -0.03em;
     }
 
     .subtitle {
-      margin-top: 8px;
+      margin-top: 10px;
       color: var(--muted);
       font-size: 1rem;
     }
 
     .top-grid {
       display: grid;
-      grid-template-columns: 1.3fr 0.9fr;
+      grid-template-columns: 1.35fr 0.95fr;
       gap: 18px;
       align-items: stretch;
     }
 
     .card {
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
     }
 
     .image-frame {
       position: relative;
-      min-height: 320px;
-      background: #111;
+      min-height: 340px;
+      background: rgba(16, 23, 40, 0.9);
     }
 
     .image-frame img {
       width: 100%;
       height: 100%;
-      min-height: 320px;
+      min-height: 340px;
       object-fit: cover;
       display: block;
     }
 
     .image-caption {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 16px 18px;
-      background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0.08));
-      color: #f5ecdf;
-      font-size: 0.98rem;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      padding: 14px 16px;
+      border: 1px solid rgba(223, 233, 255, 0.18);
+      border-radius: 18px;
+      background: rgba(8, 16, 30, 0.58);
+      backdrop-filter: blur(14px);
+      color: #f3f7ff;
+      font-size: 0.95rem;
     }
 
     .side-panel {
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 18px;
     }
 
+    .side-block {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(226, 236, 255, 0.06);
+      border: 1px solid rgba(198, 218, 255, 0.14);
+    }
+
     .side-block h2 {
       margin: 0 0 10px;
-      font-size: 1.08rem;
-      color: var(--gold);
-      letter-spacing: 0.04em;
+      font-size: 0.95rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
     .chapter-meta {
-      color: #f8f1e5;
-      font-size: 1.15rem;
-      line-height: 1.45;
+      color: #f7faff;
+      font-size: 1.08rem;
+      line-height: 1.5;
+      font-weight: 600;
     }
 
     .keywords {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
     .tag {
-      border: 1px solid rgba(217, 179, 108, 0.35);
-      color: #f8edd8;
-      background: rgba(217, 179, 108, 0.08);
+      border: 1px solid rgba(198, 218, 255, 0.22);
+      color: #f3f8ff;
+      background: rgba(185, 207, 255, 0.11);
       border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 0.92rem;
+      padding: 8px 13px;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     .controls {
-      margin: 18px 0 20px;
+      margin: 20px 0 22px;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       gap: 14px;
@@ -162,50 +182,57 @@
     }
 
     button {
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(38, 48, 74, 0.95), rgba(19, 27, 43, 0.95));
-      color: #fff6e8;
-      border-radius: 14px;
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(210, 226, 255, 0.14), rgba(186, 209, 255, 0.08));
+      color: #f5f8ff;
+      border-radius: 16px;
       padding: 12px 18px;
       font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-      min-width: 62px;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      min-width: 64px;
+      box-shadow: 0 10px 24px rgba(4, 12, 30, 0.18);
     }
 
     button:hover {
       transform: translateY(-1px);
-      border-color: rgba(217, 179, 108, 0.48);
-      background: linear-gradient(180deg, rgba(54, 65, 95, 0.98), rgba(28, 37, 58, 0.98));
+      border-color: rgba(220, 232, 255, 0.52);
+      background: linear-gradient(180deg, rgba(214, 229, 255, 0.2), rgba(193, 214, 255, 0.12));
+      box-shadow: 0 14px 28px rgba(4, 12, 30, 0.24);
     }
 
     .play-btn {
       font-size: 1.1rem;
-      min-width: 82px;
-      padding-inline: 20px;
+      min-width: 86px;
+      padding-inline: 22px;
     }
 
     .status {
       text-align: center;
       color: var(--muted);
-      font-size: 0.98rem;
+      font-size: 0.96rem;
+      font-weight: 500;
     }
 
     .progress-wrap {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 0 4px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
 
     input[type="range"] {
       width: 100%;
-      accent-color: var(--gold-soft);
+      accent-color: var(--accent-2);
       cursor: pointer;
     }
 
     .chapter-card {
-      padding: 26px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(235, 242, 255, 0.1), rgba(221, 232, 255, 0.06));
     }
 
     .chapter-title {
@@ -214,29 +241,32 @@
       align-items: baseline;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 12px;
+      padding-bottom: 14px;
     }
 
     .chapter-title h2 {
       margin: 0;
-      font-size: clamp(1.4rem, 2vw, 2rem);
-      color: #fbf5ea;
+      font-size: clamp(1.45rem, 2vw, 2.05rem);
+      color: #f8fbff;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
     .chapter-number {
-      color: var(--gold);
-      font-size: 0.95rem;
-      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-size: 0.9rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      font-weight: 700;
     }
 
     .chapter-text {
       white-space: pre-wrap;
-      line-height: 1.9;
-      font-size: 1.08rem;
-      color: #f2ede2;
+      line-height: 1.95;
+      font-size: 1.03rem;
+      color: #edf3ff;
       max-height: 52vh;
       overflow-y: auto;
       padding-right: 8px;
@@ -247,7 +277,7 @@
     }
 
     .chapter-text::-webkit-scrollbar-thumb {
-      background: rgba(217, 179, 108, 0.35);
+      background: rgba(185, 207, 255, 0.28);
       border-radius: 999px;
     }
 
