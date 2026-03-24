@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maschera di Venezia – Audiolibro</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: rgba(18, 24, 38, 0.88);
+      --panel-2: rgba(27, 34, 52, 0.9);
+      --gold: #d9b36c;
+      --gold-soft: #b79252;
+      --text: #f3efe7;
+      --muted: #c8c0b1;
+      --line: rgba(217, 179, 108, 0.22);
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(7, 10, 18, 0.76), rgba(7, 10, 18, 0.92)),
+        radial-gradient(circle at top, rgba(217, 179, 108, 0.14), transparent 35%),
+        #0a0d14;
+    }
+
+    .shell {
+      width: min(1100px, calc(100% - 32px));
+      margin: 28px auto;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(8, 12, 20, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 0.92rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: #f8f3ea;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .image-frame {
+      position: relative;
+      min-height: 320px;
+      background: #111;
+    }
+
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 16px 18px;
+      background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0.08));
+      color: #f5ecdf;
+      font-size: 0.98rem;
+    }
+
+    .side-panel {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .side-block h2 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+    }
+
+    .chapter-meta {
+      color: #f8f1e5;
+      font-size: 1.15rem;
+      line-height: 1.45;
+    }
+
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid rgba(217, 179, 108, 0.35);
+      color: #f8edd8;
+      background: rgba(217, 179, 108, 0.08);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.92rem;
+    }
+
+    .controls {
+      margin: 18px 0 20px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .nav-group,
+    .play-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(38, 48, 74, 0.95), rgba(19, 27, 43, 0.95));
+      color: #fff6e8;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      min-width: 62px;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(217, 179, 108, 0.48);
+      background: linear-gradient(180deg, rgba(54, 65, 95, 0.98), rgba(28, 37, 58, 0.98));
+    }
+
+    .play-btn {
+      font-size: 1.1rem;
+      min-width: 82px;
+      padding-inline: 20px;
+    }
+
+    .status {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold-soft);
+      cursor: pointer;
+    }
+
+    .chapter-card {
+      padding: 26px;
+    }
+
+    .chapter-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+
+    .chapter-title h2 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      color: #fbf5ea;
+    }
+
+    .chapter-number {
+      color: var(--gold);
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .chapter-text {
+      white-space: pre-wrap;
+      line-height: 1.9;
+      font-size: 1.08rem;
+      color: #f2ede2;
+      max-height: 52vh;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .chapter-text::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .chapter-text::-webkit-scrollbar-thumb {
+      background: rgba(217, 179, 108, 0.35);
+      border-radius: 999px;
+    }
+
+    audio {
+      display: none;
+    }
+
+    @media (max-width: 860px) {
+      .top-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .chapter-text {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <div class="eyebrow">Audiolibro</div>
+      <h1>Maschera di Venezia</h1>
+      <div class="subtitle">Illustrazione, ascolto e testo sincronizzati capitolo per capitolo</div>
+    </header>
+
+    <section class="top-grid">
+      <article class="card image-frame">
+        <img id="chapterImage" src="capitolo1.jpg" alt="Illustrazione del capitolo" />
+        <div class="image-caption" id="imageCaption">Piazza San Marco, il Carnevale e l'apparizione della donna misteriosa.</div>
+      </article>
+
+      <aside class="card side-panel">
+        <div class="side-block">
+          <h2>Capitolo attuale</h2>
+          <div class="chapter-meta" id="chapterMeta">Capitolo 1 · Il primo incontro</div>
+        </div>
+
+        <div class="side-block">
+          <h2>Parole importanti</h2>
+          <div class="keywords" id="keywords"></div>
+        </div>
+
+        <div class="side-block">
+          <h2>Ascolto</h2>
+          <div class="status" id="audioStatus">Pronto per la riproduzione</div>
+          <div class="progress-wrap">
+            <span id="currentTime">0:00</span>
+            <input id="progressBar" type="range" min="0" max="100" value="0" />
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="controls">
+      <div class="nav-group">
+        <button id="prevBtn" aria-label="Capitolo precedente">&#171;</button>
+        <button id="nextBtn" aria-label="Capitolo successivo">&#187;</button>
+      </div>
+      <div class="play-group">
+        <button class="play-btn" id="playBtn" aria-label="Riproduci o metti in pausa">▶</button>
+      </div>
+      <div class="status" id="chapterCounter">Capitolo 1 di 2</div>
+    </section>
+
+    <section class="card chapter-card">
+      <div class="chapter-title">
+        <h2 id="chapterHeading">Il primo incontro</h2>
+        <div class="chapter-number" id="chapterNumber">Capitolo 1</div>
+      </div>
+      <div class="chapter-text" id="chapterText"></div>
+    </section>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+  </main>
+
+  <script>
+    const chapters = [
+      {
+        title: "Il primo incontro",
+        number: "Capitolo 1",
+        meta: "Capitolo 1 · Il primo incontro",
+        image: "capitolo1.jpg",
+        caption: "Piazza San Marco, il Carnevale e l'apparizione della donna misteriosa.",
+        audio: "capitolo1.mp3",
+        keywords: ["Carnevale", "Piazza San Marco", "mistero", "colombina", "calle", "donna dagli occhi azzurri"],
+        text: `Venezia, 20 febbraio 2025
+
+Roberto si trovava nel cuore di Piazza San Marco, circondato da un’esplosione di colori, suoni e maschere. Sembrava che il mondo intero si fosse radunato lì, in quell’unico istante, per celebrare la magia del Carnevale di Venezia. Argentino di nascita e viaggiatore nello spirito, aveva sempre sognato di vedere quella città. E ora che si trovava lì, aveva la sensazione di vivere dentro un sogno.
+
+— Allora, Roberto, che te ne pare? — chiese Alessio, il suo amico italiano, sistemando la tricorne che completava alla perfezione il suo costume del XVIII secolo. Alessio era un appassionato d’arte, e ogni suo gesto sembrava ispirato ai grandi maestri del passato.
+
+— Mi piace da impazzire — rispose Roberto sorridendo. — Grazie davvero per l’invito. Non avrei potuto immaginare di meglio.
+
+Laura, la loro amica, sistemò la maschera sul volto. Era una moretta, la tradizionale maschera veneziana di velluto nero che le conferiva un’aria misteriosa e raffinata.
+
+— Venezia è un museo a cielo aperto — disse con sincera passione nella voce. — Ogni angolo, ogni canale racconta una storia. E il Carnevale è il momento in cui tutte queste storie prendono vita.
+
+Roberto annuì, ammirando la piazza illuminata.
+
+— Incredibile… — sussurrò. — Non pensavo che sarebbe stato così… magico.
+
+Alessio e Laura si scambiarono uno sguardo complice.
+
+— Andiamo a prendere qualcosa da bere — disse Alessio indicando un chiosco poco lontano. — Rimani qui, Roberto? Non vorrei che ti perdessi nella folla.
+
+— Non preoccupatevi — rispose Roberto con un gesto rassicurante della mano. — Resto qui ad ammirare tutto. Ci vediamo tra poco.
+
+Gli amici si allontanarono, lasciandolo solo tra la folla danzante. Roberto si guardò attorno, cercando di assorbire ogni dettaglio. Le maschere, i costumi, le luci… tutto sembrava uscito da un dipinto.
+
+Ed è proprio allora che la vide.
+
+Era una ragazza.
+
+Indossava un abito veneziano di seta blu notte, ricamato con fili d’argento che scintillavano come stelle. L’ampia gonna a balze ondeggiava dolcemente a ogni passo, mentre il corsetto, ornato di perle e merletti, ne esaltava l’eleganza. Sul volto portava una colombina — una raffinata maschera dorata e argentata, decorata con sottili filigrane e piccole pietre azzurre. Copriva solo gli occhi e la parte superiore del viso, lasciando visibili le linee morbide delle labbra e il delicato ovale del volto, rendendo la sua figura ancora più misteriosa. Da sotto la maschera scendevano lunghi capelli castano scuro, e i suoi occhi azzurri brillavano intensi e profondi, come se potessero guardare direttamente nell’anima.
+
+Si muoveva con una grazia naturale, come se stesse danzando su una musica che solo lei poteva sentire.
+
+Un brivido percorse la schiena di Roberto. Non sapeva perché, ma sentiva di doverla seguire. Come se una forza invisibile lo attirasse in avanti.
+
+— Permesso… — mormorò, facendosi strada tra la gente.
+
+La folla era fitta, ma non la perdeva di vista. Ogni volta che gli sembrava di averla smarrita, lei riappariva — come un’ombra, o uno spirito che giocava con lui.
+
+— Aspetti! — la chiamò, ma la sua voce si perse nel rumore della festa.
+
+La ragazza si voltò per un istante. I suoi occhi azzurri incontrarono lo sguardo di Roberto attraverso la maschera. Poi, con un movimento rapido, svoltò in una calle laterale.
+
+Roberto non esitò. La seguì.
+
+Il cuore gli batteva all’impazzata. La stretta calle era buia, illuminata solo da pochi lampioni. La ragazza sembrava apparire e scomparire come un’illusione. Ma lui non si fermò. Sentiva che in quell’incontro c’era qualcosa di importante, qualcosa che non poteva lasciarsi sfuggire.
+
+Chi sei? pensava, come se lei potesse sentirlo.
+Perché mi stai conducendo qui?
+
+Lei non rispondeva.
+
+Si fermò davanti a un antico portone di legno, decorato con intagli che sembravano raccontare storie dimenticate. La ragazza si voltò. I suoi occhi brillavano nella penombra. Poi, lentamente e con intenzione, sollevò la maschera, rivelando un sorriso enigmatico.
+
+— Sei sicuro di volerlo sapere? — chiese con una voce che sembrava venire da un altro mondo.
+
+Roberto rimase senza parole.
+
+Non capiva cosa stesse accadendo, ma una cosa la sapeva con certezza: la sua vita non sarebbe mai più stata la stessa.
+
+Roberto rimase immobile davanti all’antico portone. La misteriosa donna era sparita, come se non fosse mai esistita. Il suo sorriso enigmatico, gli occhi azzurri, l’abito color notte… tutto si era dissolto nel nulla.
+
+Eppure lui sapeva che non era stata immaginazione. Era reale. E ora… non c’era più.
+
+— Roberto! — una voce familiare lo strappò ai suoi pensieri.
+
+Si voltò e vide Alessio e Laura con due bicchieri di vino in mano e un’espressione preoccupata sui volti.
+
+— Dove sei finito? — chiese Laura. — Ti abbiamo cercato dappertutto!
+
+Roberto aprì la bocca, ma le parole gli rimasero in gola. Come spiegare ciò che era appena successo? Come descrivere una donna uscita da un sogno, svanita senza lasciare traccia?
+
+— Io… ho visto una ragazza — disse infine. — Era incredibilmente bella. Indossava un abito veneziano blu con ricami d’argento. Una maschera bianca e dorata. Mi ha condotto fin qui… e poi è sparita.
+
+Alessio e Laura si scambiarono uno sguardo dubbioso.
+
+— Una ragazza? — ripeté Alessio. — Roberto, questa è Venezia. Ci sono centinaia di persone in maschera. Sei sicuro di non esserti confuso?
+
+— No — rispose Roberto con fermezza. — Lei era diversa. Aveva qualcosa di… magico.
+
+Laura gli posò dolcemente una mano sulla spalla.
+
+— Forse è solo la magia del Carnevale. Questa città sa giocare con la mente. Ti fa vedere cose che non esistono, credere a storie che forse non sono reali.
+
+Roberto scosse la testa, ma non insistette. Sapeva che non avrebbero capito. Forse nemmeno lui capiva ancora. Ma una cosa era certa: quell’incontro non era stato casuale. C’era qualcosa di più. Qualcosa oltre la logica e la ragione.
+
+— Forse hai ragione — disse guardando il portone di legno. — Forse è solo il Carnevale… e la mia immaginazione.
+
+Ma nel profondo sapeva che non era vero.
+
+La misteriosa donna era reale. E prima o poi l’avrebbe incontrata di nuovo.
+
+— Andiamo — disse Alessio porgendogli un bicchiere di vino. — Non possiamo perderci la festa. C’è ancora tanto da vedere.
+
+Roberto annuì e seguì gli amici verso la piazza illuminata. Ma, mentre se ne andava, si voltò un’ultima volta.
+
+La calle era vuota. Silenziosa.
+
+Nessuna traccia della donna. Né dell’abito blu. Né della maschera dorata.
+
+Eppure Roberto sentiva che lei era ancora lì. Da qualche parte. Nascosta nell’ombra.
+
+E sapeva che la loro storia era appena cominciata.`
+      },
+      {
+        title: "La gondola e il segreto",
+        number: "Capitolo 2",
+        meta: "Capitolo 2 · La gondola e il segreto",
+        image: "capitolo2.jpg",
+        caption: "Una gondola sul Canal Grande, uno sguardo ritrovato e una tensione che cresce.",
+        audio: "capitolo2.mp3",
+        keywords: ["Canal Grande", "gondola", "cataclisma", "città sommersa", "sguardi", "gelosia"],
+        text: `La gondola scivolava sulle acque scure del Canal Grande quasi senza fare rumore, come se temesse di disturbare la quiete di Venezia. I riflessi delle luci tremavano sulla superficie dell’acqua, trasformando la città in una visione instabile, irreale. I palazzi antichi che si affacciavano sul canale sembravano testimoni di un numero infinito di segreti — e di nessuno completamente svelato.
+
+Alessio, Laura e Roberto sedevano l’uno di fronte all’altra, avvolti in coperte di lana. Il freddo della sera si faceva sentire con particolare intensità, ma tra loro aleggiava un calore teso — quello che nasce quando una conversazione sta per toccare qualcosa di importante.
+
+— Allora, Roberto — disse infine Alessio con un sorriso pigro. — Dicevi che non sei venuto qui solo per il Carnevale. Hai una ragione. Una vera.
+
+Roberto lasciò scorrere lentamente lo sguardo sull’acqua. Lo sapeva: se avesse iniziato a parlare, non ci sarebbe più stato modo di tornare indietro.
+
+— Sì — disse. — Venezia per me non è solo una città. È una prova. La chiave di una teoria su cui lavoro da anni.
+
+Laura si irrigidì appena, ma non disse nulla. Osservava Roberto con attenzione, come se cercasse di cogliere non solo le sue parole, ma anche ciò che stava nascondendo.
+
+— Una teoria? — chiese piano. — Quale?
+
+Roberto inspirò profondamente.
+
+— Sono convinto che in passato l’umanità abbia vissuto un cataclisma globale. Non un mito, non una leggenda — un evento reale. L’acqua è salita. Le città sono state inghiottite dagli oceani. E molte di esse… sono ancora lì.
+
+Alessio sorrise, ma senza ironia.
+
+— E Venezia è una di queste?
+
+— Esattamente — annuì Roberto. — Credo che sia stata costruita sulla terraferma. Una vera città. E ciò che vediamo oggi è solo la parte superiore. Il resto è nascosto sotto l’acqua.
+
+Laura lo fissava senza distogliere lo sguardo.
+
+— Ne sei sicuro?
+
+— Sono sicuro che la storia ufficiale è incompleta — rispose lui. — Troppe incongruenze. Troppo silenzio.
+
+Alessio scosse la testa pensieroso.
+
+— Una teoria affascinante. Pericolosa. E… molto nel tuo stile.
+
+La gondola rallentò leggermente per lasciar passare un’altra imbarcazione. Roberto alzò lo sguardo — e si immobilizzò.
+
+Nella gondola accanto c’era lei.
+
+La donna dagli occhi azzurri.
+
+Il suo abito color notte scintillava alla luce dei lampioni, come tessuto di oscurità e mistero. La maschera era sollevata. I loro sguardi si incontrarono — e in quell’istante Roberto sentì che tutto il resto perdeva importanza.
+
+— Lei… — sussurrò.
+
+Alessio e Laura si voltarono nello stesso momento.
+
+— È lei? — chiese Laura.
+
+Roberto annuì.
+
+Alessio fischiò piano, con un sorriso leggero, quasi giocoso.
+
+— Hmm… ora capisco perché non riesci a dimenticarla.
+
+Le parole uscirono con leggerezza. Quasi per scherzo.
+
+Ma Laura lo percepì.
+
+Le sue dita si strinsero sotto la coperta. Il sorriso che le era affiorato per un attimo svanì subito. Guardò di nuovo la donna nell’altra gondola — con attenzione, con una sfumatura di giudizio. Poi riportò lo sguardo su Roberto.
+
+— Capisco — disse, con un tono più freddo di quanto avrebbe voluto. — Quindi basta uno sguardo per dimenticare tutto il resto?
+
+Roberto si voltò bruscamente verso di lei.
+
+— Laura, non è…
+
+— Va tutto bene — lo interruppe, distogliendo lo sguardo. — È solo… interessante vedere quanto in fretta certe cose diventino più importanti di altre.
+
+Alessio tossì, rendendosi conto all’improvviso di aver superato il limite.
+
+— Non era quello che intendevo…
+
+Ma Laura non lo stava più ascoltando.
+
+La gondola della donna scomparve lentamente nell’ombra. Roberto la seguì con lo sguardo, ma ora nel suo petto non c’era solo agitazione — c’era anche un senso di colpa, sottile e inquietante.
+
+— Roberto — disse infine Laura, più piano, quasi in un sussurro. — Se hai intenzione di cercare delle risposte… assicurati di sapere chi potresti perdere.
+
+Lui incontrò il suo sguardo. Nei suoi occhi c’era qualcosa di più della gelosia. C’era paura.
+
+E Venezia, riflessa nelle acque scure, sembrava trattenere il respiro, in attesa della sua scelta.`
+      }
+    ];
+
+    let currentIndex = 0;
+
+    const chapterImage = document.getElementById("chapterImage");
+    const imageCaption = document.getElementById("imageCaption");
+    const chapterMeta = document.getElementById("chapterMeta");
+    const keywords = document.getElementById("keywords");
+    const chapterHeading = document.getElementById("chapterHeading");
+    const chapterNumber = document.getElementById("chapterNumber");
+    const chapterText = document.getElementById("chapterText");
+    const chapterCounter = document.getElementById("chapterCounter");
+    const audioStatus = document.getElementById("audioStatus");
+    const currentTimeEl = document.getElementById("currentTime");
+    const durationEl = document.getElementById("duration");
+    const progressBar = document.getElementById("progressBar");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const playBtn = document.getElementById("playBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function formatTime(seconds) {
+      if (!isFinite(seconds)) return "0:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+      return `${mins}:${secs}`;
+    }
+
+    function renderKeywords(items) {
+      keywords.innerHTML = "";
+      items.forEach((item) => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = item;
+        keywords.appendChild(span);
+      });
+    }
+
+    function loadChapter(index, autoplay = false) {
+      currentIndex = index;
+      const chapter = chapters[currentIndex];
+
+      audioPlayer.pause();
+      playBtn.textContent = "▶";
+      audioStatus.textContent = "Pronto per la riproduzione";
+      progressBar.value = 0;
+      currentTimeEl.textContent = "0:00";
+      durationEl.textContent = "0:00";
+
+      chapterImage.src = chapter.image;
+      chapterImage.alt = `Illustrazione ${chapter.number}`;
+      imageCaption.textContent = chapter.caption;
+      chapterMeta.textContent = chapter.meta;
+      chapterHeading.textContent = chapter.title;
+      chapterNumber.textContent = chapter.number;
+      chapterCounter.textContent = `${chapter.number} di ${chapters.length}`;
+      chapterText.textContent = chapter.text;
+      audioPlayer.src = chapter.audio;
+      renderKeywords(chapter.keywords);
+      chapterText.scrollTop = 0;
+
+      if (autoplay) {
+        audioPlayer.play();
+      }
+    }
+
+    function togglePlay() {
+      if (!audioPlayer.src) return;
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
+    }
+
+    function nextChapter() {
+      const next = (currentIndex + 1) % chapters.length;
+      loadChapter(next, true);
+    }
+
+    function prevChapter() {
+      const prev = (currentIndex - 1 + chapters.length) % chapters.length;
+      loadChapter(prev, true);
+    }
+
+    playBtn.addEventListener("click", togglePlay);
+    nextBtn.addEventListener("click", nextChapter);
+    prevBtn.addEventListener("click", prevChapter);
+
+    audioPlayer.addEventListener("play", () => {
+      playBtn.textContent = "❚❚";
+      audioStatus.textContent = "Riproduzione in corso";
+    });
+
+    audioPlayer.addEventListener("pause", () => {
+      playBtn.textContent = "▶";
+      audioStatus.textContent = "In pausa";
+    });
+
+    audioPlayer.addEventListener("loadedmetadata", () => {
+      durationEl.textContent = formatTime(audioPlayer.duration);
+    });
+
+    audioPlayer.addEventListener("timeupdate", () => {
+      currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+      if (audioPlayer.duration) {
+        progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      }
+    });
+
+    audioPlayer.addEventListener("ended", () => {
+      playBtn.textContent = "▶";
+      audioStatus.textContent = "Riproduzione terminata";
+      progressBar.value = 100;
+    });
+
+    progressBar.addEventListener("input", () => {
+      if (!audioPlayer.duration) return;
+      const newTime = (progressBar.value / 100) * audioPlayer.duration;
+      audioPlayer.currentTime = newTime;
+    });
+
+    loadChapter(0);
+  </script>
+</body>
+</html>
