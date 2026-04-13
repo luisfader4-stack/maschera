@@ -1,0 +1,3 @@
+Inserisci qui le immagini dei capitoli con questi nomi:
+capitolo-01.jpg, capitolo-02.jpg, ... capitolo-30.jpg
+Puoi anche aggiungere un banner in alto chiamato banner.jpg
