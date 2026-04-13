@@ -1,690 +1,834 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maschera di Venezia – Audiolibro</title>
-  <style>
-    :root {
-      --bg: #07111f;
-      --bg-2: #0d1830;
-      --panel: rgba(235, 242, 255, 0.1);
-      --panel-strong: rgba(226, 236, 255, 0.16);
-      --panel-soft: rgba(214, 228, 255, 0.08);
-      --line: rgba(189, 210, 255, 0.22);
-      --line-strong: rgba(198, 218, 255, 0.34);
-      --text: #eef4ff;
-      --muted: #bfd0ee;
-      --accent: #b9cfff;
-      --accent-2: #9ebdff;
-      --shadow: 0 18px 50px rgba(2, 8, 20, 0.42);
-      --radius: 24px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(163, 191, 255, 0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(147, 180, 255, 0.14), transparent 24%),
-        linear-gradient(180deg, #0a1325 0%, #0b1730 48%, #09101f 100%);
-    }
-
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 24px auto;
-      padding: 26px;
-      border: 1px solid var(--line);
-      border-radius: 32px;
-      background: rgba(10, 18, 34, 0.72);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      font-size: 0.8rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
-      color: #f6f9ff;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-
-    .subtitle {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    .top-grid {
-      display: grid;
-      grid-template-columns: 1.35fr 0.95fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .card {
-      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-    }
-
-    .image-frame {
-      position: relative;
-      min-height: 340px;
-      background: rgba(16, 23, 40, 0.9);
-    }
-
-    .image-frame img {
-      width: 100%;
-      height: 100%;
-      min-height: 340px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .image-caption {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 16px;
-      padding: 14px 16px;
-      border: 1px solid rgba(223, 233, 255, 0.18);
-      border-radius: 18px;
-      background: rgba(8, 16, 30, 0.58);
-      backdrop-filter: blur(14px);
-      color: #f3f7ff;
-      font-size: 0.95rem;
-    }
-
-    .side-panel {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .side-block {
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(226, 236, 255, 0.06);
-      border: 1px solid rgba(198, 218, 255, 0.14);
-    }
-
-    .side-block h2 {
-      margin: 0 0 10px;
-      font-size: 0.95rem;
-      color: var(--accent);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .chapter-meta {
-      color: #f7faff;
-      font-size: 1.08rem;
-      line-height: 1.5;
-      font-weight: 600;
-    }
-
-    .keywords {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .tag {
-      border: 1px solid rgba(198, 218, 255, 0.22);
-      color: #f3f8ff;
-      background: rgba(185, 207, 255, 0.11);
-      border-radius: 999px;
-      padding: 8px 13px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .controls {
-      margin: 20px 0 22px;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .nav-group,
-    .play-group {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: 1px solid var(--line-strong);
-      background: linear-gradient(180deg, rgba(210, 226, 255, 0.14), rgba(186, 209, 255, 0.08));
-      color: #f5f8ff;
-      border-radius: 16px;
-      padding: 12px 18px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-      min-width: 64px;
-      box-shadow: 0 10px 24px rgba(4, 12, 30, 0.18);
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(220, 232, 255, 0.52);
-      background: linear-gradient(180deg, rgba(214, 229, 255, 0.2), rgba(193, 214, 255, 0.12));
-      box-shadow: 0 14px 28px rgba(4, 12, 30, 0.24);
-    }
-
-    .play-btn {
-      font-size: 1.1rem;
-      min-width: 86px;
-      padding-inline: 22px;
-    }
-
-    .status {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.96rem;
-      font-weight: 500;
-    }
-
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 2px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent-2);
-      cursor: pointer;
-    }
-
-    .chapter-card {
-      padding: 28px;
-      background: linear-gradient(180deg, rgba(235, 242, 255, 0.1), rgba(221, 232, 255, 0.06));
-    }
-
-    .chapter-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 14px;
-    }
-
-    .chapter-title h2 {
-      margin: 0;
-      font-size: clamp(1.45rem, 2vw, 2.05rem);
-      color: #f8fbff;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .chapter-number {
-      color: var(--accent);
-      font-size: 0.9rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .chapter-text {
-      white-space: pre-wrap;
-      line-height: 1.95;
-      font-size: 1.03rem;
-      color: #edf3ff;
-      max-height: 52vh;
-      overflow-y: auto;
-      padding-right: 8px;
-    }
-
-    .chapter-text::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .chapter-text::-webkit-scrollbar-thumb {
-      background: rgba(185, 207, 255, 0.28);
-      border-radius: 999px;
-    }
-
-    audio {
-      display: none;
-    }
-
-    @media (max-width: 860px) {
-      .top-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .controls {
-        grid-template-columns: 1fr;
-      }
-
-      .chapter-text {
-        max-height: none;
-      }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maschera di Venezia — Romanzo online</title>
+  <meta name="description" content="Leggi Maschera di Venezia online, capitolo per capitolo.">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-  <main class="shell">
-    <header class="header">
-      <div class="eyebrow">Audiolibro</div>
-      <h1>Maschera di Venezia</h1>
-      <div class="subtitle">Illustrazione, ascolto e testo sincronizzati capitolo per capitolo</div>
-    </header>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="brand-title">Maschera di Venezia</span>
+        <span class="brand-sub">30 capitoli disponibili</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#capitoli">Capitoli</a>
+        <a href="#come-usarlo">Come usarlo</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="top-grid">
-      <article class="card image-frame">
-        <img id="chapterImage" src="capitolo1.jpg" alt="Illustrazione del capitolo" />
-        <div class="image-caption" id="imageCaption">Piazza San Marco, il Carnevale e l'apparizione della donna misteriosa.</div>
-      </article>
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Romanzo online</div>
+          <h1>Maschera di Venezia</h1>
+          <p>
+            🇮🇹 La Maschera di Venezia — Riassunto
 
-      <aside class="card side-panel">
-        <div class="side-block">
-          <h2>Capitolo attuale</h2>
-          <div class="chapter-meta" id="chapterMeta">Capitolo 1 · Il primo incontro</div>
-        </div>
+Durante il misterioso Carnevale di Venezia, tra maschere eleganti e calli illuminate, la città sembra vivere una festa senza fine… ma sotto la superficie si nasconde un segreto antico.
 
-        <div class="side-block">
-          <h2>Parole importanti</h2>
-          <div class="keywords" id="keywords"></div>
-        </div>
+Tutto inizia con un omicidio: un uomo viene ucciso mentre cerca di proteggere un oggetto misterioso. Poco dopo, Roberto, un giovane argentino appassionato di storia e misteri, arriva a Venezia con una teoria incredibile: secondo lui, la città non è sempre stata sull’acqua… ma è stata sommersa dopo una catastrofe.
 
-        <div class="side-block">
-          <h2>Ascolto</h2>
-          <div class="status" id="audioStatus">Pronto per la riproduzione</div>
-          <div class="progress-wrap">
-            <span id="currentTime">0:00</span>
-            <input id="progressBar" type="range" min="0" max="100" value="0" />
-            <span id="duration">0:00</span>
+Durante il Carnevale, Roberto incontra una donna enigmatica: Natalia, dagli occhi azzurri e dal comportamento misterioso. Lei appare e scompare come un fantasma, guidandolo sempre più vicino alla verità.
+
+Seguendo indizi nascosti tra palazzi, simboli antichi e canali oscuri, Roberto scopre che sotto Venezia esiste una città perduta, rimasta nascosta per secoli. Ma non è l’unico a cercarla.
+
+Una società segreta, la Loggia, vuole mantenere il segreto e controllare il potere nascosto nella città sommersa. Per questo elimina chiunque si avvicini troppo alla verità.
+
+Al centro di tutto c’è un oggetto leggendario: una maschera misteriosa capace di controllare le acque e il destino di Venezia.
+
+Roberto dovrà affrontare pericoli, tradimenti e scelte difficili:
+
+fidarsi di Natalia… o temerla?
+salvare i suoi amici… o scoprire la verità?
+usare il potere della maschera… o distruggerlo?
+          </p>
+          <div class="meta">
+            <span class="meta-chip">30 capitoli</span>
+            <span class="meta-chip">Bellissimi disegni</span>
+            <span class="meta-chip">Impara italiano con i romanzi di Roberto Fader</span>
           </div>
         </div>
-      </aside>
+        <div class="hero-banner">
+          <img src="assets/images/banner.jpg" alt="Banner del romanzo"
+               onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+          <div class="placeholder" hidden>
+            <div>
+              <h2 style="margin-bottom:10px;">Spazio banner</h2>
+              <p>Carica qui una tua immagine come <strong>assets/images/banner.jpg</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="controls">
-      <div class="nav-group">
-        <button id="prevBtn" aria-label="Capitolo precedente">&#171;</button>
-        <button id="nextBtn" aria-label="Capitolo successivo">&#187;</button>
+    <section class="section" id="capitoli">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Tutti i capitoli</h2>
+            <p>Scegli un capitolo per iniziare la lettura. Ogni pagina è separata, così il sito resta veloce, ordinato e facile da navigare.</p>
+          </div>
+          <div class="meta-chip" data-results-count></div>
+        </div>
+
+        <div class="controls">
+          <label class="search">
+            <input type="search" placeholder="Cerca per titolo o contenuto…" data-search>
+          </label>
+        </div>
+
+        <div class="grid">
+          
+      <article class="card" data-chapter-card data-search="Capitolo Primo: Il Carnevale Venezia, 20 febbraio 2025. Il sole era ormai un ricordo lontano, inghiottito dalle acque scure dei canali. Le sei di sera segnavano l’inizio di una notte che avrebbe cambiato tutto. La città, avvolta nelle sue maschere e nei suoi misteri, respirava l’aria frizzante del Carnevale. Piazza San Marco era un turbinio di luci, colori e risate, ma nelle calli più strette, lontano dalla folla, l’oscurità regnava sovrana. Un uomo correva. Il suo respiro affannoso si confondeva con il suono dei suoi passi che risuonavano sui selciati umidi. Aveva il volto pallido, gli occhi spalancati dalla paura. Si voltava continuamente, come se temesse che qualcosa, o qualcuno, lo stesse già raggiungendo. Le sue mani stringevano un piccolo oggetto, avvolto in un panno scuro, come se fosse la sua unica ancora di salvezza.">
+        <a href="capitoli/capitolo-01.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-01.jpg" alt="Immagine del Capitolo Primo: Il Carnevale" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Primo</div>
+                <strong>Il Carnevale</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Primo</div>
+          <h3 class="card-title">Il Carnevale</h3>
+          <p class="card-text">Venezia, 20 febbraio 2025. Il sole era ormai un ricordo lontano, inghiottito dalle acque scure dei canali. Le sei di sera segnavano l’inizio di una notte che avrebbe cambiato…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Secondo: L’Incontro nella Folla Roberto si trovava nel cuore di Piazza San Marco, circondato da un’esplosione di colori, suoni e maschere. Era come se tutto il mondo si fosse radunato lì, in quel preciso momento, per celebrare la magia del Carnevale di Venezia. Lui, argentino di nascita ma con l’anima di un viaggiatore, aveva sempre sognato di visitare questa città. E ora che era lì, si sentiva come se stesse vivendo un sogno. Che ne pensi, Roberto? chiese Alessio, il suo amico italiano, mentre aggiustava il suo cappello a tricorno, perfettamente in tema con il suo costume settecentesco. Alessio era un appassionato d’arte, e ogni suo gesto sembrava ispirato dai grandi maestri del passato.">
+        <a href="capitoli/capitolo-02.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-02.jpg" alt="Immagine del Capitolo Secondo: L’Incontro nella Folla" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Secondo</div>
+                <strong>L’Incontro nella Folla</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Secondo</div>
+          <h3 class="card-title">L’Incontro nella Folla</h3>
+          <p class="card-text">Roberto si trovava nel cuore di Piazza San Marco, circondato da un’esplosione di colori, suoni e maschere. Era come se tutto il mondo si fosse radunato lì, in quel preciso…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Terzo: La Teoria delle Acque La gondola scivolava silenziosamente lungo il Canal Grande, il suo movimento leggero cullato dalle acque scure che riflettevano le luci della città. Alessio, Laura e Roberto erano seduti uno di fronte all’altro, avvolti in coperte di lana per proteggersi dal freddo della sera. Il gondoliere, in piedi a poppa, manovrava con maestria, guidando l’imbarcazione tra i palazzi secolari che si affacciavano sul canale. Allora, Roberto, disse Alessio, rompendo il silenzio. Hai detto che sei qui per una ragione precisa, non solo per il Carnevale. Vuoi spiegarci meglio?">
+        <a href="capitoli/capitolo-03.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-03.jpg" alt="Immagine del Capitolo Terzo: La Teoria delle Acque" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Terzo</div>
+                <strong>La Teoria delle Acque</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Terzo</div>
+          <h3 class="card-title">La Teoria delle Acque</h3>
+          <p class="card-text">La gondola scivolava silenziosamente lungo il Canal Grande, il suo movimento leggero cullato dalle acque scure che riflettevano le luci della città. Alessio, Laura e Roberto erano…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Quarto: Il Ballo dei Misteri Alessio e Laura partirono per Firenze all’alba, lasciando Roberto solo a Venezia. Ci vediamo tra un paio di giorni, disse Alessio, stringendogli la mano. Fai attenzione, e non perderti troppo nelle tue ricerche. Laura lo abbracciò, con un sorriso affettuoso. E se incontri di nuovo quella donna degli occhi azzurri, fatti coraggio. Chissà, potrebbe essere la chiave per la tua teoria.">
+        <a href="capitoli/capitolo-04.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-04.jpg" alt="Immagine del Capitolo Quarto: Il Ballo dei Misteri" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Quarto</div>
+                <strong>Il Ballo dei Misteri</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Quarto</div>
+          <h3 class="card-title">Il Ballo dei Misteri</h3>
+          <p class="card-text">Alessio e Laura partirono per Firenze all’alba, lasciando Roberto solo a Venezia. Ci vediamo tra un paio di giorni, disse Alessio, stringendogli la mano. Fai attenzione, e non…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Quinto: Il Segreto dei Simboli Roberto tornò al suo appartamento affittato, situato in un palazzo antico con una vista privilegiata sul Ponte dei Sospiri. La finestra del salotto si apriva su uno scorcio unico: il ponte, illuminato dalle luci notturne, sembrava sospeso tra cielo e acqua, mentre le gondole scivolavano silenziose sotto di esso. Era uno spettacolo che, in altre circostanze, lo avrebbe riempito di meraviglia. Ma quella notte, la sua mente era altrove. Seduto al tavolo, accese il computer e iniziò a caricare le fotografie che aveva scattato durante il giorno. Le immagini si susseguivano sullo schermo: dettagli di muri, sculture, bassorilievi e simboli nascosti tra le pietre di Venezia. Più le osservava, più si convinceva che quei simboli non erano casuali. Erano parte di un puzzle, un messaggio lasciato da qualcuno, o forse da qualcosa, molto tempo fa.">
+        <a href="capitoli/capitolo-05.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-05.jpg" alt="Immagine del Capitolo Quinto: Il Segreto dei Simboli" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Quinto</div>
+                <strong>Il Segreto dei Simboli</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Quinto</div>
+          <h3 class="card-title">Il Segreto dei Simboli</h3>
+          <p class="card-text">Roberto tornò al suo appartamento affittato, situato in un palazzo antico con una vista privilegiata sul Ponte dei Sospiri. La finestra del salotto si apriva su uno scorcio unico:…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Sesto: La Loggia In una sala segreta, nascosta nel cuore di Venezia, un gruppo di uomini vestiti di nero era riunito attorno a un tavolo di legno antico. Le pareti erano ricoperte di libri polverosi e mappe ingiallite, mentre una sola candela illuminava i loro volti severi. Parlavano in veneziano, con voci basse e preoccupate. Ultimamente, i piani della loggia non funzionano, disse uno di loro, un uomo magro con gli occhi penetranti. Qualcosa sta andando storto.">
+        <a href="capitoli/capitolo-06.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-06.jpg" alt="Immagine del Capitolo Sesto: La Loggia" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Sesto</div>
+                <strong>La Loggia</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Sesto</div>
+          <h3 class="card-title">La Loggia</h3>
+          <p class="card-text">In una sala segreta, nascosta nel cuore di Venezia, un gruppo di uomini vestiti di nero era riunito attorno a un tavolo di legno antico. Le pareti erano ricoperte di libri…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Settimo: L’Interrogatorio La questura di Venezia era un luogo austero, con pareti scrostate e luci fluorescenti che tremolavano appena sufficientemente per illuminare i corridoi. Roberto era seduto in una stanza piccola e spoglia, di fronte a un tavolo di metallo. Il commissario, un uomo robusto con un viso segnato dalle rughe e un cognome che sembrava uscito da un’antica famiglia veneziana – Commissario Marcello Zancan – lo fissava con occhi penetranti. Allora, signor Roberto, iniziò Zancan, con un tono che non ammetteva repliche. Mi spieghi cosa ci fa un argentino a Venezia, a cercare di dimostrare che la città è stata costruita prima di un’alluvione che l’ha sommersa. Non le sembra una teoria un po’… fantasiosa?">
+        <a href="capitoli/capitolo-07.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-07.jpg" alt="Immagine del Capitolo Settimo: L’Interrogatorio" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Settimo</div>
+                <strong>L’Interrogatorio</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Settimo</div>
+          <h3 class="card-title">L’Interrogatorio</h3>
+          <p class="card-text">La questura di Venezia era un luogo austero, con pareti scrostate e luci fluorescenti che tremolavano appena sufficientemente per illuminare i corridoi. Roberto era seduto in una…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ottavo: Il Bacio nel Caos Il Carnevale di Venezia era nel suo apice, e Piazza San Marco era un turbinio di luci, colori e suoni. Roberto aveva deciso di prendersi una pausa dalle sue ricerche, cercando di distrarsi e di non pensare troppo agli eventi della notte precedente. Si era unito alla folla, lasciandosi trasportare dall’energia della festa. Indossava una semplice maschera veneziana, quasi a volersi nascondere, ma il suo sguardo era ancora attento, come se cercasse qualcosa – o qualcuno. In piazza, il gran evento della serata stava per iniziare: uno spettacolo di “Volo dell’Angelo”, una tradizione secolare in cui un acrobata, vestito da angelo, scendeva dal campanile di San Marco sospeso a una fune, volteggiando sopra la folla in estasi. Roberto si fermò ai margini della piazza, guardando verso l’alto mentre l’angelo iniziava la sua discesa. Era uno spettacolo mozzafiato, ma la sua mente era altrove.">
+        <a href="capitoli/capitolo-08.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-08.jpg" alt="Immagine del Capitolo Ottavo: Il Bacio nel Caos" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ottavo</div>
+                <strong>Il Bacio nel Caos</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ottavo</div>
+          <h3 class="card-title">Il Bacio nel Caos</h3>
+          <p class="card-text">Il Carnevale di Venezia era nel suo apice, e Piazza San Marco era un turbinio di luci, colori e suoni. Roberto aveva deciso di prendersi una pausa dalle sue ricerche, cercando di…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Nono: Il Segreto delle Acque Perdute La gondola senza gondoliere scivolava silenziosa attraverso i canali, come guidata da una forza invisibile. Roberto fissava Natalia mentre i suoi occhi azzurri riflettevano la luce lunare, mentre i palazzi di Venezia sembravano piegarsi attorno a loro, trasformandosi in ombre antiche. L’acqua era così scura da sembrare un abisso, eppure la barca avanzava con sicurezza, come se conoscesse ogni segreto della città. Dove mi stai portando? chiese Roberto, la voce un sussurro nel silenzio irreale.">
+        <a href="capitoli/capitolo-09.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-09.jpg" alt="Immagine del Capitolo Nono: Il Segreto delle Acque Perdute" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Nono</div>
+                <strong>Il Segreto delle Acque Perdute</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Nono</div>
+          <h3 class="card-title">Il Segreto delle Acque Perdute</h3>
+          <p class="card-text">La gondola senza gondoliere scivolava silenziosa attraverso i canali, come guidata da una forza invisibile. Roberto fissava Natalia mentre i suoi occhi azzurri riflettevano la…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Decimo: La Rivelazione della Loggia La sala segreta della Loggia era immersa in un silenzio pesante, rotto solo dal crepitio delle candele e dal lontano sciabordio dell’acqua contro le fondamenta del palazzo. Gli uomini riuniti attorno al tavolo di quercia scura erano volti noti nel sottobosco veneziano: mercanti senza scrupoli, politici corrotti, ex nobili caduti in disgrazia. E al centro di tutto, il capo, Ludovico Gradenigo, ultimo discendente di una delle famiglie più potenti della Serenissima, ora ridotto a comandare un’organizzazione di cospiratori. Quando la porta si aprì, tutti si voltarono. Un giovane sconosciuto entrò, il suo mantello nero  ondeggiava con un’eleganza antica. Non indossava una maschera, ma il suo volto era così impassibile da sembrarne uno.">
+        <a href="capitoli/capitolo-10.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-10.jpg" alt="Immagine del Capitolo Decimo: La Rivelazione della Loggia" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Decimo</div>
+                <strong>La Rivelazione della Loggia</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Decimo</div>
+          <h3 class="card-title">La Rivelazione della Loggia</h3>
+          <p class="card-text">La sala segreta della Loggia era immersa in un silenzio pesante, rotto solo dal crepitio delle candele e dal lontano sciabordio dell’acqua contro le fondamenta del palazzo. Gli…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Undicesimo: La Gondola dei Segreti La gondola scivolava silenziosa lungo il Canal Grande, avvolta dalla nebbia serale. Roberto era seduto a prua, lo sguardo fisso sull’acqua scura, mentre stringeva tra le mani la chiave d’oro che Natalia gli aveva affidato. Ogni increspatura delle onde sembrava sussurrargli un indizio, un pezzo del puzzle che ancora non riusciva a comporre. All’improvviso, il suo telefono squillò, rompendo l’incantesimo. Alessio.">
+        <a href="capitoli/capitolo-11.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-11.jpg" alt="Immagine del Capitolo Undicesimo: La Gondola dei Segreti" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Undicesimo</div>
+                <strong>La Gondola dei Segreti</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Undicesimo</div>
+          <h3 class="card-title">La Gondola dei Segreti</h3>
+          <p class="card-text">La gondola scivolava silenziosa lungo il Canal Grande, avvolta dalla nebbia serale. Roberto era seduto a prua, lo sguardo fisso sull’acqua scura, mentre stringeva tra le mani la…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Dodicessimo: Gli Occhi nel Buio Il commissario Zancan reggeva i binocoli con mani ferme. Dall&#x27;altro lato del canale, la gondola di Roberto scivolava sull&#x27;acqua senza gondoliere, mossa da una forza invisibile. &quot;Esattamente come previsto.&quot;">
+        <a href="capitoli/capitolo-12.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-12.jpg" alt="Immagine del Capitolo Dodicessimo: Gli Occhi nel Buio" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Dodicessimo</div>
+                <strong>Gli Occhi nel Buio</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Dodicessimo</div>
+          <h3 class="card-title">Gli Occhi nel Buio</h3>
+          <p class="card-text">Il commissario Zancan reggeva i binocoli con mani ferme. Dall&#x27;altro lato del canale, la gondola di Roberto scivolava sull&#x27;acqua senza gondoliere, mossa da una forza invisibile.</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Tredicesimo: La Prova del Cuore Puro La gondola di Roberto si fermò bruscamente, come se avesse urtato una barriera invisibile. Le acque intorno a loro erano immobili, quasi gelate. &quot;Perché non avanziamo?&quot; chiese Laura, guardandosi intorno con preoccupazione.">
+        <a href="capitoli/capitolo-13.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-13.jpg" alt="Immagine del Capitolo Tredicesimo: La Prova del Cuore Puro" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Tredicesimo</div>
+                <strong>La Prova del Cuore Puro</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Tredicesimo</div>
+          <h3 class="card-title">La Prova del Cuore Puro</h3>
+          <p class="card-text">La gondola di Roberto si fermò bruscamente, come se avesse urtato una barriera invisibile. Le acque intorno a loro erano immobili, quasi gelate.</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Quattordicesimo: Il Potere della Maschera Roberto avanzò da solo nel cuore della Venezia perduta, i suoi passi echeggiavano tra le mura dorate. L&#x27;aria era carica di un&#x27;energia antica, come se il tempo stesso si fosse fermato in quel luogo. Davanti a lui, su un altare di marmo bianco, giaceva la Maschera. Era diversa da qualsiasi altra maschera veneziana che avesse mai visto. Bianca come l&#x27;alabastro, con venature d&#x27;oro che disegnavano motivi misteriosi, e due occhi di cristallo blu che sembravano osservarlo.">
+        <a href="capitoli/capitolo-14.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-14.jpg" alt="Immagine del Capitolo Quattordicesimo: Il Potere della Maschera" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Quattordicesimo</div>
+                <strong>Il Potere della Maschera</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Quattordicesimo</div>
+          <h3 class="card-title">Il Potere della Maschera</h3>
+          <p class="card-text">Roberto avanzò da solo nel cuore della Venezia perduta, i suoi passi echeggiavano tra le mura dorate. L&#x27;aria era carica di un&#x27;energia antica, come se il tempo stesso si fosse…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Quindicesimo: Il Tradimento del Sangue La tensione nell’aria era palpabile. Il commissario Zancan fissò Roberto con uno sguardo carico di disprezzo, la pistola ancora puntata verso di lui. &quot;Se non mi consegni la maschera entro un minuto, i tuoi amici moriranno,&quot; sibilò sorridente dalla crudeltà. Roberto serrò i pugni. Non poteva lasciare che Alessio e Laura soffrissero per colpa sua. Ma prima che potesse reagire, una voce fredda e tagliente risuonò nell’ombra.">
+        <a href="capitoli/capitolo-15.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-15.jpg" alt="Immagine del Capitolo Quindicesimo: Il Tradimento del Sangue" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Quindicesimo</div>
+                <strong>Il Tradimento del Sangue</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Quindicesimo</div>
+          <h3 class="card-title">Il Tradimento del Sangue</h3>
+          <p class="card-text">La tensione nell’aria era palpabile. Il commissario Zancan fissò Roberto con uno sguardo carico di disprezzo, la pistola ancora puntata verso di lui. &quot;Se non mi consegni la…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Sedicesimo: Il Giudizio delle Acque I poliziotti, ancora furiosi per l’umiliazione, estrassero le pistole e aprirono il fuoco contro Roberto. Ma prima che i proiettili potessero raggiungerlo, Natalia alzò una mano con grazia sovrumana. Un lampo azzurro attraversò l’aria, e i proiettili si dissolsero in una pioggia di polvere dorata.">
+        <a href="capitoli/capitolo-16.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-16.jpg" alt="Immagine del Capitolo Sedicesimo: Il Giudizio delle Acque" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Sedicesimo</div>
+                <strong>Il Giudizio delle Acque</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Sedicesimo</div>
+          <h3 class="card-title">Il Giudizio delle Acque</h3>
+          <p class="card-text">I poliziotti, ancora furiosi per l’umiliazione, estrassero le pistole e aprirono il fuoco contro Roberto. Ma prima che i proiettili potessero raggiungerlo, Natalia alzò una mano…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Diciassettesimo: La Trappola della Loggia Marco Dandolo camminava su e giù nella sala del quartier generale della Loggia con le mani dietro la schiena. Il volto si illuminava dalle fioche luci delle torce appese alle pareti. Uno dei capi, un uomo massiccio con una cicatrice che gli attraversava la guancia, lo fissò con aria scettica. &quot;Perché teniamo prigionieri questi due inutili?&quot; ringhiò, indicando Alessio e Laura rinchiusi in una cella poco distante. &quot;Sono solo un peso.&quot;">
+        <a href="capitoli/capitolo-17.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-17.jpg" alt="Immagine del Capitolo Diciassettesimo: La Trappola della Loggia" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Diciassettesimo</div>
+                <strong>La Trappola della Loggia</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Diciassettesimo</div>
+          <h3 class="card-title">La Trappola della Loggia</h3>
+          <p class="card-text">Marco Dandolo camminava su e giù nella sala del quartier generale della Loggia con le mani dietro la schiena. Il volto si illuminava dalle fioche luci delle torce appese alle…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Diciottesimo: L&#x27;Ordine del Coprifuoco La sala del consiglio della Loggia era avvolta da un&#x27;atmosfera pesante, illuminata solo dalle fiamme tremolanti dei candelabri d&#x27;argento. Il Provveditore (il massimo magistrato della città) si alzò dal suo scranno intarsiato, il volto scavato dall&#x27;ombra. &quot;È giunto il momento,&quot; dichiarò con voce che echeggiò come un decreto antico. &quot;Stasera… stessa Venezia cadrà sotto coprifuoco. Diremo alla popolazione che un&#x27;epidemia di peste nera è stata rilevata nelle acque dei canali.&quot;">
+        <a href="capitoli/capitolo-18.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-18.jpg" alt="Immagine del Capitolo Diciottesimo: L&#x27;Ordine del Coprifuoco" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Diciottesimo</div>
+                <strong>L&#x27;Ordine del Coprifuoco</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Diciottesimo</div>
+          <h3 class="card-title">L&#x27;Ordine del Coprifuoco</h3>
+          <p class="card-text">La sala del consiglio della Loggia era avvolta da un&#x27;atmosfera pesante, illuminata solo dalle fiamme tremolanti dei candelabri d&#x27;argento. Il Provveditore (il massimo magistrato…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Diciannovesimo: &quot;Il Ritorno Malizioso&quot; La luna piena illuminava debolmente i canali di Venezia, trasformando l&#x27;acqua in uno specchio nero e inquietante. Le ombre sembravano muoversi da sole tra i palazzi secolari quando improvvisamente tre figure emersero dall&#x27;oscurità. Erano loro - gli uomini in nero del primo capitolo, le loro maschere veneziane ora screpolate e consumate dal tempo. Il più alto stringeva tra le mani il medaglione d&#x27;oro rubato alla prima vittima, l&#x27;oggetto che pulsava di una luce fioca e intermittente. &quot;Dov&#x27;è la chiave?&quot; sibilò l&#x27;uomo, afferrando Marco Dandolo per il colletto. &quot;Quel ragazzo morto l&#x27;aveva nascosta. E tu, piccolo principe fallito, non ci hai detto tutto!&quot;">
+        <a href="capitoli/capitolo-19.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-19.jpg" alt="Immagine del Capitolo Diciannovesimo: &quot;Il Ritorno Malizioso&quot;" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Diciannovesimo</div>
+                <strong>&quot;Il Ritorno Malizioso&quot;</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Diciannovesimo</div>
+          <h3 class="card-title">&quot;Il Ritorno Malizioso&quot;</h3>
+          <p class="card-text">La luna piena illuminava debolmente i canali di Venezia, trasformando l&#x27;acqua in uno specchio nero e inquietante. Le ombre sembravano muoversi da sole tra i palazzi secolari…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventesimo: &quot;Allarme Matevirus - #RestaACasa&quot; [Scena: Uno studio televisivo con luci intermittenti e un enorme striscione che recita &quot;EMERGENZA SANITARIA A VENEZIA!&quot;. Il conduttore, Giancarlo Buffoni, uomo con i capelli unti e una cravatta troppo stretta, parla con disperazione teatrale davanti alla telecamera.] BUFFONI: (urlando, con gli occhi sgranati)">
+        <a href="capitoli/capitolo-20.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-20.jpg" alt="Immagine del Capitolo Ventesimo: &quot;Allarme Matevirus - #RestaACasa&quot;" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventesimo</div>
+                <strong>&quot;Allarme Matevirus - #RestaACasa&quot;</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventesimo</div>
+          <h3 class="card-title">&quot;Allarme Matevirus - #RestaACasa&quot;</h3>
+          <p class="card-text">[Scena: Uno studio televisivo con luci intermittenti e un enorme striscione che recita &quot;EMERGENZA SANITARIA A VENEZIA!&quot;. Il conduttore, Giancarlo Buffoni, uomo con i capelli unti…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventunesimo: il Segreto Del Cuore La gondola senza gondoliere scivolava silenziosa lungo il canale oscuro, riportandoli verso quel luogo segreto che Roberto ormai conosceva bene. Le acque nere riflettevano la luna piena, e nell&#x27;aria c&#x27;era quella strana elettricità che precede sempre l&#x27;arrivo di un temporale - o di un destino. &quot;Ci siamo quasi,&quot; sussurrò Natalia, i suoi occhi azzurri brillavano nella penombra come due stelle cadute in mare.">
+        <a href="capitoli/capitolo-21.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-21.jpg" alt="Immagine del Capitolo Ventunesimo: il Segreto Del Cuore" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventunesimo</div>
+                <strong>il Segreto Del Cuore</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventunesimo</div>
+          <h3 class="card-title">il Segreto Del Cuore</h3>
+          <p class="card-text">La gondola senza gondoliere scivolava silenziosa lungo il canale oscuro, riportandoli verso quel luogo segreto che Roberto ormai conosceva bene. Le acque nere riflettevano la luna…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventiduesimo: Fuga nella Laguna Natalia lo baciò appassionatamente con le sue labbra calde e dolci come il sole che non vedevano da giorni. Roberto le accarezzò il viso. Il suo cuore batteva all’impazzata. &quot;Ti amo,&quot; sussurrò tra un bacio e l’altro, le parole che gli bruciavano dentro da tempo.">
+        <a href="capitoli/capitolo-22.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-22.jpg" alt="Immagine del Capitolo Ventiduesimo: Fuga nella Laguna" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventiduesimo</div>
+                <strong>Fuga nella Laguna</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventiduesimo</div>
+          <h3 class="card-title">Fuga nella Laguna</h3>
+          <p class="card-text">Natalia lo baciò appassionatamente con le sue labbra calde e dolci come il sole che non vedevano da giorni. Roberto le accarezzò il viso. Il suo cuore batteva all’impazzata.</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventitresimo: Il Messaggio e la Battaglia Alessio e Laura si guardarono intorno disorientati. Le calli di Venezia, solitamente così vive, ora erano quasi deserte a causa del falso allarme del &quot;Matevirus&quot;. La nebbia serale rendeva tutto più difficile. &quot;Come facciamo a trovare Roberto in questo caos?&quot; sospirò Laura, stringendosi nel cappotto.">
+        <a href="capitoli/capitolo-23.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-23.jpg" alt="Immagine del Capitolo Ventitresimo: Il Messaggio e la Battaglia" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventitresimo</div>
+                <strong>Il Messaggio e la Battaglia</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventitresimo</div>
+          <h3 class="card-title">Il Messaggio e la Battaglia</h3>
+          <p class="card-text">Alessio e Laura si guardarono intorno disorientati. Le calli di Venezia, solitamente così vive, ora erano quasi deserte a causa del falso allarme del &quot;Matevirus&quot;. La nebbia serale…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventiquattrosimo: Cena e Confessioni Sotterranee La gondola senza gondoliere scivolò silenziosa attraverso il tunnel sommerso, fino ad arrivare al palazzo nascosto di Natalia. Non appena entrarono, Roberto, Alessio e Laura rimasero a bocca aperta. Le pareti erano ricoperte di affreschi antichi, e il soffitto a volta lasciava intravedere l’acqua dei canali che luccicava sotto la luce delle lanterne blu. Un lungo tavolo di legno massiccio era già apparecchiato con piatti di ceramica decorata, bicchieri di cristallo e bottiglie di vino rosso.">
+        <a href="capitoli/capitolo-24.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-24.jpg" alt="Immagine del Capitolo Ventiquattrosimo: Cena e Confessioni Sotterranee" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventiquattrosimo</div>
+                <strong>Cena e Confessioni Sotterranee</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventiquattrosimo</div>
+          <h3 class="card-title">Cena e Confessioni Sotterranee</h3>
+          <p class="card-text">La gondola senza gondoliere scivolò silenziosa attraverso il tunnel sommerso, fino ad arrivare al palazzo nascosto di Natalia. Non appena entrarono, Roberto, Alessio e Laura…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Venticinquesimo: La Caccia all&#x27;Argentino &quot;ATTENZIONE, VENEZIA!&quot; La voce del sindaco risuonò dagli altoparlanti della città, distorta dall’emozione.">
+        <a href="capitoli/capitolo-25.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-25.jpg" alt="Immagine del Capitolo Venticinquesimo: La Caccia all&#x27;Argentino" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Venticinquesimo</div>
+                <strong>La Caccia all&#x27;Argentino</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Venticinquesimo</div>
+          <h3 class="card-title">La Caccia all&#x27;Argentino</h3>
+          <p class="card-text">&quot;ATTENZIONE, VENEZIA!&quot;</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventiseisimo: La Caduta della Maschera Natalia prese un respiro profondo e soffiò una nuvola di polvere dorata verso i tre uomini in nero che li stavano attaccando. La polvere magica avvolse i nemici come una nebbia luminosa. &quot;Funzionerà?&quot; chiese ansiosamente Laura, stringendo il braccio di Alessio.">
+        <a href="capitoli/capitolo-26.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-26.jpg" alt="Immagine del Capitolo Ventiseisimo: La Caduta della Maschera" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventiseisimo</div>
+                <strong>La Caduta della Maschera</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventiseisimo</div>
+          <h3 class="card-title">La Caduta della Maschera</h3>
+          <p class="card-text">Natalia prese un respiro profondo e soffiò una nuvola di polvere dorata verso i tre uomini in nero che li stavano attaccando. La polvere magica avvolse i nemici come una nebbia…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventisettesimo: La Rivolta del Popolo Lo Studio Televisivo – In Diretta Nazionale Le luci accecanti dei riflettori illuminavano la gabbia dove Roberto, Natalia, Laura e Alessio erano prigionieri. Marco Dandolo, il nuovo sindaco di Venezia, sorrideva davanti alle telecamere con il volto raggiante di trionfo.">
+        <a href="capitoli/capitolo-27.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-27.jpg" alt="Immagine del Capitolo Ventisettesimo: La Rivolta del Popolo" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventisettesimo</div>
+                <strong>La Rivolta del Popolo</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventisettesimo</div>
+          <h3 class="card-title">La Rivolta del Popolo</h3>
+          <p class="card-text">Lo Studio Televisivo – In Diretta Nazionale</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo Ventottesimo: La Rivolta e il Ritorno della Maschera La sala del consiglio della Loggia era un turbine di urla e piani disperati. Marco Dandolo, con il volto segnato dalla rabbia, batteva i pugni sul tavolo di quercia, mentre i membri più anziani lo fissavano con occhi carichi di disapprovazione. &quot;IL POPOLO HA OSATO RIBELLARSI!&quot; ruggì Marco, la voce rotta dall’odio. &quot;Venezia è nostra da secoli, e non permetterò che quattro intrusi e una folla di pezzenti ci rubino il potere!&quot;">
+        <a href="capitoli/capitolo-28.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-28.jpg" alt="Immagine del Capitolo Ventottesimo: La Rivolta e il Ritorno della Maschera" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo Ventottesimo</div>
+                <strong>La Rivolta e il Ritorno della Maschera</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo Ventottesimo</div>
+          <h3 class="card-title">La Rivolta e il Ritorno della Maschera</h3>
+          <p class="card-text">La sala del consiglio della Loggia era un turbine di urla e piani disperati. Marco Dandolo, con il volto segnato dalla rabbia, batteva i pugni sul tavolo di quercia, mentre i…</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo ventinovesimo: L&#x27;Assalto e la Purificazione Venezia, Notte della Rivoluzione La Loggia era in preda al panico, un panico camuffato da furia. Marco Dandolo aveva imposto la legge marziale, ma il ruggito della rivoluzione popolare annegava il suono dei proclami.">
+        <a href="capitoli/capitolo-29.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-29.jpg" alt="Immagine del Capitolo ventinovesimo: L&#x27;Assalto e la Purificazione" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo ventinovesimo</div>
+                <strong>L&#x27;Assalto e la Purificazione</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo ventinovesimo</div>
+          <h3 class="card-title">L&#x27;Assalto e la Purificazione</h3>
+          <p class="card-text">Venezia, Notte della Rivoluzione</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+      <article class="card" data-chapter-card data-search="Capitolo trentesimo: La Chiamata di Roma Venezia, Alba della Libertà Venezia era salva. I rintocchi del Campanile suonavano una sinfonia di libertà. La polvere dorata aveva fatto il suo effetto, e la rivoluzione aveva trionfato.">
+        <a href="capitoli/capitolo-30.html">
+          <div class="thumb">
+            <img src="assets/images/capitolo-30.jpg" alt="Immagine del Capitolo trentesimo: La Chiamata di Roma" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+            <div class="fallback" hidden>
+              <div>
+                <div class="card-kicker">Capitolo trentesimo</div>
+                <strong>La Chiamata di Roma</strong>
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="card-body">
+          <div class="card-kicker">Capitolo trentesimo</div>
+          <h3 class="card-title">La Chiamata di Roma</h3>
+          <p class="card-text">Venezia, Alba della Libertà</p>
+          <div class="card-footer">
+            <span class="read-link">Apri capitolo</span>
+            <span aria-hidden="true">→</span>
+          </div>
+        </div>
+      </article>
+    
+        </div>
+
+        <div class="empty-state" data-empty hidden>Nessun capitolo corrisponde alla ricerca.</div>
       </div>
-      <div class="play-group">
-        <button class="play-btn" id="playBtn" aria-label="Riproduci o metti in pausa">▶</button>
-      </div>
-      <div class="status" id="chapterCounter">Capitolo 1 di 2</div>
     </section>
 
-    <section class="card chapter-card">
-      <div class="chapter-title">
-        <h2 id="chapterHeading">Il primo incontro</h2>
-        <div class="chapter-number" id="chapterNumber">Capitolo 1</div>
+    <section class="section" id="come-usarlo">
+      <div class="container">
+        <div class="chapter-content">
+          <h2>Come usarlo su GitHub</h2>
+          <p>Carica tutti i file così come sono in un repository GitHub. Poi attiva GitHub Pages nelle impostazioni del repository, scegliendo il branch principale.</p>
+          <p>Per aggiungere le immagini dei capitoli, inseriscile nella cartella <strong>assets/images</strong> usando i nomi già previsti: <strong>capitolo-01.jpg</strong>, <strong>capitolo-02.jpg</strong> e così via.</p>
+          <p class="notice">Puoi modificare testi, colori e struttura in qualsiasi momento. Il sito è statico, quindi non serve alcun backend.</p>
+        </div>
       </div>
-      <div class="chapter-text" id="chapterText"></div>
     </section>
-
-    <audio id="audioPlayer" preload="metadata"></audio>
   </main>
 
-  <script>
-    const chapters = [
-      {
-        title: "Il primo incontro",
-        number: "Capitolo 1",
-        meta: "Capitolo 1 · Il primo incontro",
-        image: "capitolo1.jpg",
-        caption: "Piazza San Marco, il Carnevale e l'apparizione della donna misteriosa.",
-        audio: "capitolo1.mp3",
-        keywords: ["Carnevale", "Piazza San Marco", "mistero", "colombina", "calle", "donna dagli occhi azzurri"],
-        text: `Venezia, 20 febbraio 2025
-
-Roberto si trovava nel cuore di Piazza San Marco, circondato da un’esplosione di colori, suoni e maschere. Sembrava che il mondo intero si fosse radunato lì, in quell’unico istante, per celebrare la magia del Carnevale di Venezia. Argentino di nascita e viaggiatore nello spirito, aveva sempre sognato di vedere quella città. E ora che si trovava lì, aveva la sensazione di vivere dentro un sogno.
-
-— Allora, Roberto, che te ne pare? — chiese Alessio, il suo amico italiano, sistemando la tricorne che completava alla perfezione il suo costume del XVIII secolo. Alessio era un appassionato d’arte, e ogni suo gesto sembrava ispirato ai grandi maestri del passato.
-
-— Mi piace da impazzire — rispose Roberto sorridendo. — Grazie davvero per l’invito. Non avrei potuto immaginare di meglio.
-
-Laura, la loro amica, sistemò la maschera sul volto. Era una moretta, la tradizionale maschera veneziana di velluto nero che le conferiva un’aria misteriosa e raffinata.
-
-— Venezia è un museo a cielo aperto — disse con sincera passione nella voce. — Ogni angolo, ogni canale racconta una storia. E il Carnevale è il momento in cui tutte queste storie prendono vita.
-
-Roberto annuì, ammirando la piazza illuminata.
-
-— Incredibile… — sussurrò. — Non pensavo che sarebbe stato così… magico.
-
-Alessio e Laura si scambiarono uno sguardo complice.
-
-— Andiamo a prendere qualcosa da bere — disse Alessio indicando un chiosco poco lontano. — Rimani qui, Roberto? Non vorrei che ti perdessi nella folla.
-
-— Non preoccupatevi — rispose Roberto con un gesto rassicurante della mano. — Resto qui ad ammirare tutto. Ci vediamo tra poco.
-
-Gli amici si allontanarono, lasciandolo solo tra la folla danzante. Roberto si guardò attorno, cercando di assorbire ogni dettaglio. Le maschere, i costumi, le luci… tutto sembrava uscito da un dipinto.
-
-Ed è proprio allora che la vide.
-
-Era una ragazza.
-
-Indossava un abito veneziano di seta blu notte, ricamato con fili d’argento che scintillavano come stelle. L’ampia gonna a balze ondeggiava dolcemente a ogni passo, mentre il corsetto, ornato di perle e merletti, ne esaltava l’eleganza. Sul volto portava una colombina — una raffinata maschera dorata e argentata, decorata con sottili filigrane e piccole pietre azzurre. Copriva solo gli occhi e la parte superiore del viso, lasciando visibili le linee morbide delle labbra e il delicato ovale del volto, rendendo la sua figura ancora più misteriosa. Da sotto la maschera scendevano lunghi capelli castano scuro, e i suoi occhi azzurri brillavano intensi e profondi, come se potessero guardare direttamente nell’anima.
-
-Si muoveva con una grazia naturale, come se stesse danzando su una musica che solo lei poteva sentire.
-
-Un brivido percorse la schiena di Roberto. Non sapeva perché, ma sentiva di doverla seguire. Come se una forza invisibile lo attirasse in avanti.
-
-— Permesso… — mormorò, facendosi strada tra la gente.
-
-La folla era fitta, ma non la perdeva di vista. Ogni volta che gli sembrava di averla smarrita, lei riappariva — come un’ombra, o uno spirito che giocava con lui.
-
-— Aspetti! — la chiamò, ma la sua voce si perse nel rumore della festa.
-
-La ragazza si voltò per un istante. I suoi occhi azzurri incontrarono lo sguardo di Roberto attraverso la maschera. Poi, con un movimento rapido, svoltò in una calle laterale.
-
-Roberto non esitò. La seguì.
-
-Il cuore gli batteva all’impazzata. La stretta calle era buia, illuminata solo da pochi lampioni. La ragazza sembrava apparire e scomparire come un’illusione. Ma lui non si fermò. Sentiva che in quell’incontro c’era qualcosa di importante, qualcosa che non poteva lasciarsi sfuggire.
-
-Chi sei? pensava, come se lei potesse sentirlo.
-Perché mi stai conducendo qui?
-
-Lei non rispondeva.
-
-Si fermò davanti a un antico portone di legno, decorato con intagli che sembravano raccontare storie dimenticate. La ragazza si voltò. I suoi occhi brillavano nella penombra. Poi, lentamente e con intenzione, sollevò la maschera, rivelando un sorriso enigmatico.
-
-— Sei sicuro di volerlo sapere? — chiese con una voce che sembrava venire da un altro mondo.
-
-Roberto rimase senza parole.
-
-Non capiva cosa stesse accadendo, ma una cosa la sapeva con certezza: la sua vita non sarebbe mai più stata la stessa.
-
-Roberto rimase immobile davanti all’antico portone. La misteriosa donna era sparita, come se non fosse mai esistita. Il suo sorriso enigmatico, gli occhi azzurri, l’abito color notte… tutto si era dissolto nel nulla.
-
-Eppure lui sapeva che non era stata immaginazione. Era reale. E ora… non c’era più.
-
-— Roberto! — una voce familiare lo strappò ai suoi pensieri.
-
-Si voltò e vide Alessio e Laura con due bicchieri di vino in mano e un’espressione preoccupata sui volti.
-
-— Dove sei finito? — chiese Laura. — Ti abbiamo cercato dappertutto!
-
-Roberto aprì la bocca, ma le parole gli rimasero in gola. Come spiegare ciò che era appena successo? Come descrivere una donna uscita da un sogno, svanita senza lasciare traccia?
-
-— Io… ho visto una ragazza — disse infine. — Era incredibilmente bella. Indossava un abito veneziano blu con ricami d’argento. Una maschera bianca e dorata. Mi ha condotto fin qui… e poi è sparita.
-
-Alessio e Laura si scambiarono uno sguardo dubbioso.
-
-— Una ragazza? — ripeté Alessio. — Roberto, questa è Venezia. Ci sono centinaia di persone in maschera. Sei sicuro di non esserti confuso?
-
-— No — rispose Roberto con fermezza. — Lei era diversa. Aveva qualcosa di… magico.
-
-Laura gli posò dolcemente una mano sulla spalla.
-
-— Forse è solo la magia del Carnevale. Questa città sa giocare con la mente. Ti fa vedere cose che non esistono, credere a storie che forse non sono reali.
-
-Roberto scosse la testa, ma non insistette. Sapeva che non avrebbero capito. Forse nemmeno lui capiva ancora. Ma una cosa era certa: quell’incontro non era stato casuale. C’era qualcosa di più. Qualcosa oltre la logica e la ragione.
-
-— Forse hai ragione — disse guardando il portone di legno. — Forse è solo il Carnevale… e la mia immaginazione.
-
-Ma nel profondo sapeva che non era vero.
-
-La misteriosa donna era reale. E prima o poi l’avrebbe incontrata di nuovo.
-
-— Andiamo — disse Alessio porgendogli un bicchiere di vino. — Non possiamo perderci la festa. C’è ancora tanto da vedere.
-
-Roberto annuì e seguì gli amici verso la piazza illuminata. Ma, mentre se ne andava, si voltò un’ultima volta.
-
-La calle era vuota. Silenziosa.
-
-Nessuna traccia della donna. Né dell’abito blu. Né della maschera dorata.
-
-Eppure Roberto sentiva che lei era ancora lì. Da qualche parte. Nascosta nell’ombra.
-
-E sapeva che la loro storia era appena cominciata.`
-      },
-      {
-        title: "La gondola e il segreto",
-        number: "Capitolo 2",
-        meta: "Capitolo 2 · La gondola e il segreto",
-        image: "capitolo2.jpg",
-        caption: "Una gondola sul Canal Grande, uno sguardo ritrovato e una tensione che cresce.",
-        audio: "capitolo2.mp3",
-        keywords: ["Canal Grande", "gondola", "cataclisma", "città sommersa", "sguardi", "gelosia"],
-        text: `La gondola scivolava sulle acque scure del Canal Grande quasi senza fare rumore, come se temesse di disturbare la quiete di Venezia. I riflessi delle luci tremavano sulla superficie dell’acqua, trasformando la città in una visione instabile, irreale. I palazzi antichi che si affacciavano sul canale sembravano testimoni di un numero infinito di segreti — e di nessuno completamente svelato.
-
-Alessio, Laura e Roberto sedevano l’uno di fronte all’altra, avvolti in coperte di lana. Il freddo della sera si faceva sentire con particolare intensità, ma tra loro aleggiava un calore teso — quello che nasce quando una conversazione sta per toccare qualcosa di importante.
-
-— Allora, Roberto — disse infine Alessio con un sorriso pigro. — Dicevi che non sei venuto qui solo per il Carnevale. Hai una ragione. Una vera.
-
-Roberto lasciò scorrere lentamente lo sguardo sull’acqua. Lo sapeva: se avesse iniziato a parlare, non ci sarebbe più stato modo di tornare indietro.
-
-— Sì — disse. — Venezia per me non è solo una città. È una prova. La chiave di una teoria su cui lavoro da anni.
-
-Laura si irrigidì appena, ma non disse nulla. Osservava Roberto con attenzione, come se cercasse di cogliere non solo le sue parole, ma anche ciò che stava nascondendo.
-
-— Una teoria? — chiese piano. — Quale?
-
-Roberto inspirò profondamente.
-
-— Sono convinto che in passato l’umanità abbia vissuto un cataclisma globale. Non un mito, non una leggenda — un evento reale. L’acqua è salita. Le città sono state inghiottite dagli oceani. E molte di esse… sono ancora lì.
-
-Alessio sorrise, ma senza ironia.
-
-— E Venezia è una di queste?
-
-— Esattamente — annuì Roberto. — Credo che sia stata costruita sulla terraferma. Una vera città. E ciò che vediamo oggi è solo la parte superiore. Il resto è nascosto sotto l’acqua.
-
-Laura lo fissava senza distogliere lo sguardo.
-
-— Ne sei sicuro?
-
-— Sono sicuro che la storia ufficiale è incompleta — rispose lui. — Troppe incongruenze. Troppo silenzio.
-
-Alessio scosse la testa pensieroso.
-
-— Una teoria affascinante. Pericolosa. E… molto nel tuo stile.
-
-La gondola rallentò leggermente per lasciar passare un’altra imbarcazione. Roberto alzò lo sguardo — e si immobilizzò.
-
-Nella gondola accanto c’era lei.
-
-La donna dagli occhi azzurri.
-
-Il suo abito color notte scintillava alla luce dei lampioni, come tessuto di oscurità e mistero. La maschera era sollevata. I loro sguardi si incontrarono — e in quell’istante Roberto sentì che tutto il resto perdeva importanza.
-
-— Lei… — sussurrò.
-
-Alessio e Laura si voltarono nello stesso momento.
-
-— È lei? — chiese Laura.
-
-Roberto annuì.
-
-Alessio fischiò piano, con un sorriso leggero, quasi giocoso.
-
-— Hmm… ora capisco perché non riesci a dimenticarla.
-
-Le parole uscirono con leggerezza. Quasi per scherzo.
-
-Ma Laura lo percepì.
-
-Le sue dita si strinsero sotto la coperta. Il sorriso che le era affiorato per un attimo svanì subito. Guardò di nuovo la donna nell’altra gondola — con attenzione, con una sfumatura di giudizio. Poi riportò lo sguardo su Roberto.
-
-— Capisco — disse, con un tono più freddo di quanto avrebbe voluto. — Quindi basta uno sguardo per dimenticare tutto il resto?
-
-Roberto si voltò bruscamente verso di lei.
-
-— Laura, non è…
-
-— Va tutto bene — lo interruppe, distogliendo lo sguardo. — È solo… interessante vedere quanto in fretta certe cose diventino più importanti di altre.
-
-Alessio tossì, rendendosi conto all’improvviso di aver superato il limite.
-
-— Non era quello che intendevo…
-
-Ma Laura non lo stava più ascoltando.
-
-La gondola della donna scomparve lentamente nell’ombra. Roberto la seguì con lo sguardo, ma ora nel suo petto non c’era solo agitazione — c’era anche un senso di colpa, sottile e inquietante.
-
-— Roberto — disse infine Laura, più piano, quasi in un sussurro. — Se hai intenzione di cercare delle risposte… assicurati di sapere chi potresti perdere.
-
-Lui incontrò il suo sguardo. Nei suoi occhi c’era qualcosa di più della gelosia. C’era paura.
-
-E Venezia, riflessa nelle acque scure, sembrava trattenere il respiro, in attesa della sua scelta.`
-      }
-    ];
-
-    let currentIndex = 0;
-
-    const chapterImage = document.getElementById("chapterImage");
-    const imageCaption = document.getElementById("imageCaption");
-    const chapterMeta = document.getElementById("chapterMeta");
-    const keywords = document.getElementById("keywords");
-    const chapterHeading = document.getElementById("chapterHeading");
-    const chapterNumber = document.getElementById("chapterNumber");
-    const chapterText = document.getElementById("chapterText");
-    const chapterCounter = document.getElementById("chapterCounter");
-    const audioStatus = document.getElementById("audioStatus");
-    const currentTimeEl = document.getElementById("currentTime");
-    const durationEl = document.getElementById("duration");
-    const progressBar = document.getElementById("progressBar");
-    const audioPlayer = document.getElementById("audioPlayer");
-    const playBtn = document.getElementById("playBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-
-    function formatTime(seconds) {
-      if (!isFinite(seconds)) return "0:00";
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
-      return `${mins}:${secs}`;
-    }
-
-    function renderKeywords(items) {
-      keywords.innerHTML = "";
-      items.forEach((item) => {
-        const span = document.createElement("span");
-        span.className = "tag";
-        span.textContent = item;
-        keywords.appendChild(span);
-      });
-    }
-
-    function loadChapter(index, autoplay = false) {
-      currentIndex = index;
-      const chapter = chapters[currentIndex];
-
-      audioPlayer.pause();
-      playBtn.textContent = "▶";
-      audioStatus.textContent = "Pronto per la riproduzione";
-      progressBar.value = 0;
-      currentTimeEl.textContent = "0:00";
-      durationEl.textContent = "0:00";
-
-      chapterImage.src = chapter.image;
-      chapterImage.alt = `Illustrazione ${chapter.number}`;
-      imageCaption.textContent = chapter.caption;
-      chapterMeta.textContent = chapter.meta;
-      chapterHeading.textContent = chapter.title;
-      chapterNumber.textContent = chapter.number;
-      chapterCounter.textContent = `${chapter.number} di ${chapters.length}`;
-      chapterText.textContent = chapter.text;
-      audioPlayer.src = chapter.audio;
-      renderKeywords(chapter.keywords);
-      chapterText.scrollTop = 0;
-
-      if (autoplay) {
-        audioPlayer.play();
-      }
-    }
-
-    function togglePlay() {
-      if (!audioPlayer.src) return;
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-      } else {
-        audioPlayer.pause();
-      }
-    }
-
-    function nextChapter() {
-      const next = (currentIndex + 1) % chapters.length;
-      loadChapter(next, true);
-    }
-
-    function prevChapter() {
-      const prev = (currentIndex - 1 + chapters.length) % chapters.length;
-      loadChapter(prev, true);
-    }
-
-    playBtn.addEventListener("click", togglePlay);
-    nextBtn.addEventListener("click", nextChapter);
-    prevBtn.addEventListener("click", prevChapter);
-
-    audioPlayer.addEventListener("play", () => {
-      playBtn.textContent = "❚❚";
-      audioStatus.textContent = "Riproduzione in corso";
-    });
-
-    audioPlayer.addEventListener("pause", () => {
-      playBtn.textContent = "▶";
-      audioStatus.textContent = "In pausa";
-    });
-
-    audioPlayer.addEventListener("loadedmetadata", () => {
-      durationEl.textContent = formatTime(audioPlayer.duration);
-    });
-
-    audioPlayer.addEventListener("timeupdate", () => {
-      currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-      if (audioPlayer.duration) {
-        progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-      }
-    });
-
-    audioPlayer.addEventListener("ended", () => {
-      playBtn.textContent = "▶";
-      audioStatus.textContent = "Riproduzione terminata";
-      progressBar.value = 100;
-    });
-
-    progressBar.addEventListener("input", () => {
-      if (!audioPlayer.duration) return;
-      const newTime = (progressBar.value / 100) * audioPlayer.duration;
-      audioPlayer.currentTime = newTime;
-    });
-
-    loadChapter(0);
-  </script>
+  <footer class="footer">
+    <div class="container">
+      Sito statico creato per la pubblicazione del romanzo <em>Maschera di Venezia</em>.
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
